@@ -20,10 +20,10 @@ class rlalgorithm:
         if np.random.uniform() < self.epsilon:
            
             state_action = self.q_table.loc[observation, :]
-           
+            # Choose action with highest reward from list of actions corresponding to state
             action = np.random.choice(state_action[state_action == np.max(state_action)].index)
         else:
-         
+            # Choose random action. This is the epsilon case.
             action = np.random.choice(self.actions)
         return action
 
