@@ -43,6 +43,6 @@ So make sure your code runs with the given unmodified `maze_env` code if we impo
 ### Code Suggestions
 - When the number of episodes ends a plot is displayed of the algorithm performance. If multiple algorithms are run at once then they will be all plotted together for comparison. You may modify the plotting code and add any other analysis you need, this is only a starting point.
 - there are a number of parameters defined in `run_main` that can be used to speed up the simulations. Once you have debugged an algorithm and see it is running you can alter the `sim_speed`, `\*EveryNth` variables to alter the speed of each step and how often data is printed or updated visually to speed up training. 
-- For the default algorithms we have implmented on these domains it seems to take at least 1500 episodes to converge, so don't read too much into how it looks after a few hundred.
+- For the default algorithms we have implemented on these domains, it seems to take at least 1500 episodes to converge, so don't read too much into how it looks after a few hundred.
 
 <img src="plot.png" width="400"/><img src="plotzoom.png" width="400"/>
