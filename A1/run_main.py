@@ -1,6 +1,6 @@
 from maze_env import Maze
 from RL_brainsample_PI import rlalgorithm as rlalg1
-from RL_PolicyIteration import rlalgorithm as rl_pi
+from RL_PolicyIteration import AsyncPolicyIteration as asyncPI
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
     # RL1 = rlalg1(actions=list(range(env1.n_actions)))
-    RL1 = rl_pi(actions=list(range(env1.n_actions)))
+    RL1 = asyncPI(actions=list(range(env1.n_actions)))
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()

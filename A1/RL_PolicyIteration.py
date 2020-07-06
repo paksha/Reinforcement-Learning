@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
-class rlalgorithm:
+class AsyncPolicyIteration:
 
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.1):
         self.actions = actions
@@ -49,12 +49,8 @@ class rlalgorithm:
             self.V[s] = r + self.gamma * self.V[s_]
         else:
             self.V[s] = r  # next state is terminal
-        reverse_a = self.reverseAction(a)
-        env_copy = deepcopy(env)
-        self.step(env_copy, reverse_a, moving_back=True) # Puts the agent back to s instead of s_
-        A = self.lookAhead(env_copy)
+        A = self.lookAhead(env, s)
         self.q_table[s] = np.argmax(A)
-        self.step(env, a, moving_back=True) # Put agent back to s_ from s
         return s_, a_
 
 
@@ -67,12 +63,11 @@ class rlalgorithm:
             self.V[state] = 0
 
     '''step - definition of one-step dynamics function'''
-    def step(self, env, action, moving_back=False):
-        s = env.canvas.coords(env.agent)
+    def step(self, env, state, action):
+        temp_s = state.strip('][').split(', ')
+        s = [float(coord) for coord in temp_s]
         base_action = np.array([0, 0])
-        UNIT = env.UNIT
-        MAZE_H = env.MAZE_H
-        MAZE_W = env.MAZE_W
+        UNIT, MAZE_H, MAZE_W = env.UNIT, env.MAZE_H, env.MAZE_W
         if action == 0:   # up
             if s[1] > UNIT:
                 base_action[1] -= UNIT
@@ -86,34 +81,23 @@ class rlalgorithm:
             if s[0] > UNIT:
                 base_action[0] -= UNIT
 
-        env.canvas.move(env.agent, base_action[0], base_action[1])  # move agent
-
-        s_ = env.canvas.coords(env.agent)  # next state
+        s_ =  self.move(s, base_action)
 
         # call the reward function
-        reward, done, reverse = env.computeReward(s, action, s_)
-        if (reverse):
-            env.canvas.move(env.agent, -base_action[0], -base_action[1])  # move agent back
-            s_ = env.canvas.coords(env.agent)
-        elif not moving_back:
-            env.canvas.move(env.agent, -base_action[0], -base_action[1])
-
+        reward, done, _ = env.computeReward(s, action, s_)
         return str(s_), reward, done
 
-    def lookAhead(self, env):
+    def lookAhead(self, env, s):
         A = np.zeros(len(self.actions))
         for a in range(len(self.actions)):
-            s_, reward, _ = self.step(env, a)
-            self.check_state_exist(s_)
+            s_, reward, _ = self.step(env=env, state=s, action=a)
+            self.check_state_exist(state=s_)
             A[a] = reward + self.gamma * self.V[s_]
         return A
 
-    def reverseAction(self, a):
-        if a == 0:
-            return 1
-        elif a == 1:
-            return 0
-        elif a == 2:
-            return 3
-        elif a == 3:
-            return 2
+    def move(self, s, action):
+        s[0] += action[0] # update x0
+        s[1] += action[1] # update y0
+        s[2] += action[0] # update x1
+        s[3] += action[1] # update y1
+        return s
