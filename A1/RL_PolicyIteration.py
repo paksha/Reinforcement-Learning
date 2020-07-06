@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from copy import deepcopy
 
 class rlalgorithm:
 
@@ -13,7 +14,7 @@ class rlalgorithm:
         # V(s) --> R number
         self.V = {}
         self.theta = 0
-        self.display_name="Policy Iteration"
+        self.display_name="Asynchronous Policy Iteration"
 
     '''Choose the next action to take given the observed state using an epsilon greedy policy'''
     def choose_action(self, observation):
@@ -49,10 +50,11 @@ class rlalgorithm:
         else:
             self.V[s] = r  # next state is terminal
         reverse_a = self.reverseAction(a)
-        sx, rx, dx = self.step(env, reverse_a, moving_back=True) # Puts the agent back to s instead of s_
-        A = self.lookAhead(env)
+        env_copy = deepcopy(env)
+        self.step(env_copy, reverse_a, moving_back=True) # Puts the agent back to s instead of s_
+        A = self.lookAhead(env_copy)
         self.q_table[s] = np.argmax(A)
-        sx, rx, dx = self.step(env, a, moving_back=True) # Put agent back to s_ from s
+        self.step(env, a, moving_back=True) # Put agent back to s_ from s
         return s_, a_
 
 
