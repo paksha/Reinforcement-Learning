@@ -1,5 +1,6 @@
 from maze_env import Maze
 from RL_brainsample_PI import rlalgorithm as rlalg1
+from RL_PolicyIteration import rlalgorithm as rl_pi
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -61,7 +62,10 @@ def update(env, RL, data, episodes=50):
 
             # RL learn from this transition
             # and determine next state and action
-            state, action =  RL.learn(str(state), action, reward, str(state_))
+            if dp_alg:
+                state, action =  RL.learn(str(state), action, reward, str(state_), env)
+            else:
+                state, action =  RL.learn(str(state), action, reward, str(state_))
 
             # break while loop when end of this episode
             if done:
@@ -77,13 +81,13 @@ def update(env, RL, data, episodes=50):
     env.destroy()
 
 if __name__ == "__main__":
-    sim_speed = 0.05
+    sim_speed = 0.001
 
     #Example Short Fast for Debugging
-    showRender=True
-    episodes=30
-    renderEveryNth=5
-    printEveryNth=1
+    showRender=False
+    episodes=3000
+    renderEveryNth=5000
+    printEveryNth=100
     do_plot_rewards=True
 
     #Example Full Run, you may need to run longer
@@ -120,8 +124,11 @@ if __name__ == "__main__":
         [3,4],[3,5],[3,6],[4,6],[5,6],[5,7],[7,3]])
     pits=np.array([[1,3],[0,5], [7,7], [8,5]])
 
+    dp_alg = True
+
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = rlalg1(actions=list(range(env1.n_actions)))
+    # RL1 = rlalg1(actions=list(range(env1.n_actions)))
+    RL1 = rl_pi(actions=list(range(env1.n_actions)))
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
@@ -135,6 +142,7 @@ if __name__ == "__main__":
     #env2.mainloop()
     #experiments.append((env2,RL2, data2))
 
+    dp_alg = False
 
     print("All experiments complete")
 
@@ -145,7 +153,6 @@ if __name__ == "__main__":
     if(do_plot_rewards):
         #Simple plot of return for each episode and algorithm, you can make more informative plots
         plot_rewards(experiments)
-
     #Not implemented yet
     #if(do_save_data):
     #    for env, RL, data in experiments:
