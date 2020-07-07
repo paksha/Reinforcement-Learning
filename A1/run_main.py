@@ -1,6 +1,7 @@
 from maze_env import Maze
 from RL_brainsample_PI import rlalgorithm as rlalg1
 from RL_PolicyIteration import AsyncPolicyIteration as asyncPI
+from RL_ValueIteration import AsyncValueIteration as asyncVI
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -62,10 +63,7 @@ def update(env, RL, data, episodes=50):
 
             # RL learn from this transition
             # and determine next state and action
-            if dp_alg:
-                state, action =  RL.learn(str(state), action, reward, str(state_), env)
-            else:
-                state, action =  RL.learn(str(state), action, reward, str(state_))
+            state, action =  RL.learn(str(state), action, reward, str(state_))
 
             # break while loop when end of this episode
             if done:
@@ -86,7 +84,7 @@ if __name__ == "__main__":
     #Example Short Fast for Debugging
     showRender=False
     episodes=3000
-    renderEveryNth=5000
+    renderEveryNth=100
     printEveryNth=100
     do_plot_rewards=True
 
@@ -124,11 +122,9 @@ if __name__ == "__main__":
         [3,4],[3,5],[3,6],[4,6],[5,6],[5,7],[7,3]])
     pits=np.array([[1,3],[0,5], [7,7], [8,5]])
 
-    dp_alg = True
-
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    # RL1 = rlalg1(actions=list(range(env1.n_actions)))
-    RL1 = asyncPI(actions=list(range(env1.n_actions)))
+    # RL1 = asyncPI(env1)
+    RL1 = asyncVI(env1)
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
@@ -141,8 +137,6 @@ if __name__ == "__main__":
     #env2.after(10, update(env2, RL2, data2, episodes))
     #env2.mainloop()
     #experiments.append((env2,RL2, data2))
-
-    dp_alg = False
 
     print("All experiments complete")
 
