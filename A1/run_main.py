@@ -1,7 +1,10 @@
 from maze_env import Maze
 from RL_brainsample_PI import rlalgorithm as rlalg1
 from RL_PolicyIteration import AsyncPolicyIteration as asyncPI
+from RL_NPI import NormalPolicyIteration as NPI
 from RL_ValueIteration import AsyncValueIteration as asyncVI
+from RL_Sarsa import Sarsa
+from RL_QLearning import QLearning
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -79,13 +82,13 @@ def update(env, RL, data, episodes=50):
     env.destroy()
 
 if __name__ == "__main__":
-    sim_speed = 0.001
+    sim_speed = 0.05
 
     #Example Short Fast for Debugging
     showRender=False
-    episodes=3000
-    renderEveryNth=100
-    printEveryNth=100
+    episodes=2000
+    renderEveryNth=5
+    printEveryNth=5
     do_plot_rewards=True
 
     #Example Full Run, you may need to run longer
@@ -122,22 +125,41 @@ if __name__ == "__main__":
         [3,4],[3,5],[3,6],[4,6],[5,6],[5,7],[7,3]])
     pits=np.array([[1,3],[0,5], [7,7], [8,5]])
 
+    '''
+    To run experiments for each of the algorithms given a specific task, simply move the task
+    details above the 4 experiments shown below.
+    '''
+
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    # RL1 = asyncPI(env1)
-    RL1 = asyncVI(env1)
+    RL1 = asyncPI(env1)
+    # RL1 = QLearning(actions=list(range(env1.n_actions)))
+    # RL1 = Sarsa(actions=list(range(env1.n_actions)))
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
     experiments = [(env1,RL1, data1)]
+    '''
+    env2 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL2 = asyncVI(env2)
+    data2={}
+    env2.after(10, update(env2, RL2, data2, episodes))
+    env2.mainloop()
+    experiments.append((env2,RL2, data2))
 
-    #Create another RL_brain_ALGNAME.py class and import it as rlag2 then run it here.
-    #env2 = Maze(agentXY,goalXY,wall_shape,pits)
-    #RL2 = rlalg2(actions=list(range(env2.n_actions)))
-    #data2={}
-    #env2.after(10, update(env2, RL2, data2, episodes))
-    #env2.mainloop()
-    #experiments.append((env2,RL2, data2))
+    env3 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL3 = QLearning(actions=list(range(env3.n_actions)))
+    data3={}
+    env3.after(10, update(env3, RL3, data3, episodes))
+    env3.mainloop()
+    experiments.append((env3,RL3, data3))
 
+    env4 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL4 = Sarsa(actions=list(range(env4.n_actions)))
+    data4={}
+    env4.after(10, update(env4, RL4, data4, episodes))
+    env4.mainloop()
+    experiments.append((env4,RL4, data4))
+    '''
     print("All experiments complete")
 
     for env, RL, data in experiments:

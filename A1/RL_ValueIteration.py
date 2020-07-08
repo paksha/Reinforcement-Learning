@@ -4,8 +4,8 @@ from utility import step
 
 
 class AsyncValueIteration:
-
-    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0.1):
+    # Async Value Iteration works GREAT with reward_decay >= 0.95
+    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0.05):
         self.actions = list(range(env.n_actions)) 
         self.env = env
         self.lr = learning_rate
@@ -28,20 +28,13 @@ class AsyncValueIteration:
 
     def learn(self, s, a, r, s_):
         self.check_state_exist(s_)
+        A = self.lookAhead(s)
         if s_ != 'terminal':
             a_ = self.choose_action(str(s_))
-            A = self.lookAhead(s)
             self.V[s] = np.max(A)
-            self.pi[s] = np.argmax(A)
-            '''
-            states = list(self.V.keys())
-            for sp in states:
-                Ap = self.lookAhead(sp)
-                self.V[sp] = np.max(Ap)
-                self.pi[sp] = np.argmax(Ap)
-            '''
         else:
             self.V[s] = r  # next state is terminal
+        self.pi[s] = np.argmax(A)
         return s_, a_
 
     def check_state_exist(self, state):

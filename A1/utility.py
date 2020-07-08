@@ -22,7 +22,8 @@ def step(env, state, action):
     s_ =  move(s, base_action)
 
     # call the reward function
-    reward, done, _ = env.computeReward(s, action, s_)
+    reward, done, reverse = env.computeReward(s, action, s_)
+    if reverse: s_ = s
     return str(s_), reward, done
 
 def move(s, action):
