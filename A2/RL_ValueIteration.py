@@ -4,8 +4,7 @@ from utility import step
 
 
 class AsyncValueIteration:
-    # Async Value Iteration works GREAT with reward_decay >= 0.95
-    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0.05):
+    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0.1):
         self.actions = list(range(env.n_actions)) 
         self.env = env
         self.lr = learning_rate
@@ -13,16 +12,20 @@ class AsyncValueIteration:
         self.epsilon = e_greedy
         self.V = {} # Value Function
         self.pi = {}
+        '''
+        This is how much epsilon will decay each step. As Value Iteration progresses,
+        the value function will improve towards optimality, and so we can decrease
+        the amount of exploration needed as time progresses.
+        '''
+        self.epsilon_decay = 0.99
         self.display_name="Asynchronous Value Iteration"
 
     '''Choose the next action to take given the observed state using an epsilon greedy policy'''
     def choose_action(self, observation):
         self.check_state_exist(observation)
- 
         if np.random.uniform() >= self.epsilon:
             action = self.pi[observation]
-        else:
-            # Choose random action. This is the epsilon case.
+        else: # Choose random action. This is the epsilon case.
             action = np.random.choice(self.actions)
         return action
 
@@ -35,6 +38,8 @@ class AsyncValueIteration:
         else:
             self.V[s] = r  # next state is terminal
         self.pi[s] = np.argmax(A)
+        # Decrease epsilon by 1% of the current value each step
+        self.epsilon = self.epsilon * self.epsilon_decay
         return s_, a_
 
     def check_state_exist(self, state):
@@ -47,6 +52,7 @@ class AsyncValueIteration:
     def lookAhead(self, s):
         A = np.zeros(len(self.actions))
         for a in range(len(self.actions)):
+            # I am using my own step function here
             s_, reward, _ = step(env=self.env, state=s, action=a)
             self.check_state_exist(state=s_)
             A[a] = reward + self.gamma * self.V[s_]

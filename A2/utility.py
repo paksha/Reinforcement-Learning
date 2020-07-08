@@ -23,9 +23,9 @@ def step(env, state, action):
 
     # call the reward function
     reward, done, reverse = env.computeReward(s, action, s_)
-    if reverse: s_ = s
     return str(s_), reward, done
 
+'''Take the action from s and change the coordinates'''
 def move(s, action):
     s[0] += action[0] # update x0
     s[1] += action[1] # update y0

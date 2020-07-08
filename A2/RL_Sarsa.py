@@ -2,7 +2,12 @@ import numpy as np
 import pandas as pd
 
 
-class QLearning:
+class Sarsa:
+
+    '''
+    Most of the code in this file is copied directly from RL_brainsample_PI except for 
+    just a few changes made in the Learn function.
+    '''
 
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.1):
         self.actions = actions
@@ -10,7 +15,7 @@ class QLearning:
         self.gamma = reward_decay
         self.epsilon = e_greedy
         self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
-        self.display_name="Q-Learning"
+        self.display_name="SARSA"
 
     '''Choose the next action to take given the observed state using an epsilon greedy policy'''
     def choose_action(self, observation):
@@ -30,8 +35,7 @@ class QLearning:
         if s_ != 'terminal':
             a_ = self.choose_action(str(s_))
             q_initial = self.q_table.loc[s, a]
-            max_q = np.max(self.q_table.loc[str(s_), :])
-            q_target = q_initial + self.lr * (r + (self.gamma * max_q) - q_initial) 
+            q_target = q_initial + self.lr * (r + (self.gamma * self.q_table.loc[s_, a_]) - q_initial) 
         else:
             q_target = r  # next state is terminal
         self.q_table.loc[s, a] = q_target  # update

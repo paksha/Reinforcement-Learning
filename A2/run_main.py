@@ -81,22 +81,52 @@ def update(env, RL, data, episodes=50):
     print('game over -- Algorithm {} completed'.format(RL.display_name))
     env.destroy()
 
+def runExperiments(wall_shape, pits, episodes):
+
+    env1 = Maze(agentXY,goalXY,wall_shape, pits)
+    RL1 = asyncVI(env1)
+    data1={}
+    env1.after(10, update(env1, RL1, data1, episodes))
+    env1.mainloop()
+    experiments = [(env1,RL1, data1)]
+    
+    env2 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL2 = asyncPI(env2)
+    data2={}
+    env2.after(10, update(env2, RL2, data2, episodes))
+    env2.mainloop()
+    experiments.append((env2,RL2, data2))
+
+    # Note that the Model-free methods have a different constructor
+    # Only pass in the environment actions, not the environment itself unlike above
+
+    env3 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL3 = QLearning(actions=list(range(env3.n_actions)))
+    data3={}
+    env3.after(10, update(env3, RL3, data3, episodes))
+    env3.mainloop()
+    experiments.append((env3,RL3, data3))
+
+    env4 = Maze(agentXY,goalXY,wall_shape,pits)
+    RL4 = Sarsa(actions=list(range(env4.n_actions)))
+    data4={}
+    env4.after(10, update(env4, RL4, data4, episodes))
+    env4.mainloop()
+    experiments.append((env4,RL4, data4))
+    
+    return experiments
+
+
+
 if __name__ == "__main__":
-    sim_speed = 0.05
+    sim_speed = 0.001
 
     #Example Short Fast for Debugging
     showRender=False
     episodes=2000
-    renderEveryNth=5
-    printEveryNth=5
+    renderEveryNth=5000
+    printEveryNth=100
     do_plot_rewards=True
-
-    #Example Full Run, you may need to run longer
-    #showRender=False
-    #episodes=2000
-    #renderEveryNth=10000
-    #printEveryNth=100
-    #do_plot_rewards=True
 
     if(len(sys.argv)>1):
         episodes = int(sys.argv[1])
@@ -115,51 +145,25 @@ if __name__ == "__main__":
     wall_shape=np.array([[2,2],[3,6]])
     pits=np.array([[6,3],[1,4]])
 
+    # To run all algorithms on Task 1, uncomment the following line
+    experiments = runExperiments(wall_shape, pits, episodes)
+
     # Task 2
     wall_shape=np.array([[6,2],[5,2],[4,2],[3,2],[2,2],[6,3],[6,4],[6,5],
         [2,3],[2,4],[2,5]])
     pits=[]
+
+    # To run all algorithms on Task 2, uncomment the following line
+    # experiments = runExperiments(wall_shape, pits, episodes)
 
     # Task 3
     wall_shape=np.array([[6,3],[6,3],[6,2],[5,2],[4,2],[3,2],[3,3],
         [3,4],[3,5],[3,6],[4,6],[5,6],[5,7],[7,3]])
     pits=np.array([[1,3],[0,5], [7,7], [8,5]])
 
-    '''
-    To run experiments for each of the algorithms given a specific task, simply move the task
-    details above the 4 experiments shown below.
-    '''
-
-    env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = asyncPI(env1)
-    # RL1 = QLearning(actions=list(range(env1.n_actions)))
-    # RL1 = Sarsa(actions=list(range(env1.n_actions)))
-    data1={}
-    env1.after(10, update(env1, RL1, data1, episodes))
-    env1.mainloop()
-    experiments = [(env1,RL1, data1)]
-    '''
-    env2 = Maze(agentXY,goalXY,wall_shape,pits)
-    RL2 = asyncVI(env2)
-    data2={}
-    env2.after(10, update(env2, RL2, data2, episodes))
-    env2.mainloop()
-    experiments.append((env2,RL2, data2))
-
-    env3 = Maze(agentXY,goalXY,wall_shape,pits)
-    RL3 = QLearning(actions=list(range(env3.n_actions)))
-    data3={}
-    env3.after(10, update(env3, RL3, data3, episodes))
-    env3.mainloop()
-    experiments.append((env3,RL3, data3))
-
-    env4 = Maze(agentXY,goalXY,wall_shape,pits)
-    RL4 = Sarsa(actions=list(range(env4.n_actions)))
-    data4={}
-    env4.after(10, update(env4, RL4, data4, episodes))
-    env4.mainloop()
-    experiments.append((env4,RL4, data4))
-    '''
+    # To run all algorithms on Task 3, uncomment the following line
+    # experiments = runExperiments(wall_shape, pits, episodes)
+    
     print("All experiments complete")
 
     for env, RL, data in experiments:
