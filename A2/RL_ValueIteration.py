@@ -13,7 +13,7 @@ class AsyncValueIteration:
         self.V = {} # Value Function
         self.pi = {}
         '''
-        This is how much epsilon will decay each step. As Value Iteration progresses,
+        This is how much epsilon will decay each episode. As Value Iteration progresses,
         the value function will improve towards optimality, and so we can decrease
         the amount of exploration needed as time progresses.
         '''
@@ -37,9 +37,9 @@ class AsyncValueIteration:
             self.V[s] = np.max(A)
         else:
             self.V[s] = r  # next state is terminal
+            # Decrease epsilon each episode
+            self.epsilon = self.epsilon * self.epsilon_decay
         self.pi[s] = np.argmax(A)
-        # Decrease epsilon by 1% of the current value each step
-        self.epsilon = self.epsilon * self.epsilon_decay
         return s_, a_
 
     def check_state_exist(self, state):

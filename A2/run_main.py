@@ -1,7 +1,6 @@
 from maze_env import Maze
 from RL_brainsample_PI import rlalgorithm as rlalg1
 from RL_PolicyIteration import AsyncPolicyIteration as asyncPI
-from RL_NPI import NormalPolicyIteration as NPI
 from RL_ValueIteration import AsyncValueIteration as asyncVI
 from RL_Sarsa import Sarsa
 from RL_QLearning import QLearning
@@ -82,16 +81,16 @@ def update(env, RL, data, episodes=50):
     env.destroy()
 
 def runExperiments(wall_shape, pits, episodes):
-
+    
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = asyncVI(env1)
+    RL1 = asyncPI(env1)
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
     experiments = [(env1,RL1, data1)]
     
     env2 = Maze(agentXY,goalXY,wall_shape,pits)
-    RL2 = asyncPI(env2)
+    RL2 = asyncVI(env2)
     data2={}
     env2.after(10, update(env2, RL2, data2, episodes))
     env2.mainloop()
@@ -119,7 +118,7 @@ def runExperiments(wall_shape, pits, episodes):
 
 
 if __name__ == "__main__":
-    sim_speed = 0.001
+    sim_speed = 0
 
     #Example Short Fast for Debugging
     showRender=False
@@ -146,7 +145,7 @@ if __name__ == "__main__":
     pits=np.array([[6,3],[1,4]])
 
     # To run all algorithms on Task 1, uncomment the following line
-    experiments = runExperiments(wall_shape, pits, episodes)
+    # experiments = runExperiments(wall_shape, pits, episodes)
 
     # Task 2
     wall_shape=np.array([[6,2],[5,2],[4,2],[3,2],[2,2],[6,3],[6,4],[6,5],
@@ -162,7 +161,7 @@ if __name__ == "__main__":
     pits=np.array([[1,3],[0,5], [7,7], [8,5]])
 
     # To run all algorithms on Task 3, uncomment the following line
-    # experiments = runExperiments(wall_shape, pits, episodes)
+    experiments = runExperiments(wall_shape, pits, episodes)
     
     print("All experiments complete")
 
