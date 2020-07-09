@@ -82,6 +82,8 @@ def update(env, RL, data, episodes=50):
 
 def runExperiments(wall_shape, pits, episodes):
     
+    # If Async Policy Iteration begins with a very bad policy, it MIGHT get stuck (rarely) in Task 3 or hard tasks in the early episodes.
+    # If this is the case, please just try to run it again, and that will likely resolve the problem.
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
     RL1 = asyncPI(env1)
     data1={}
