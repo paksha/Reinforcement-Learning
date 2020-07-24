@@ -3,7 +3,7 @@ from utility import step
 
 class AsyncPolicyIteration:
 
-    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0.1):
+    def __init__(self, env, learning_rate=0.01, reward_decay=0.95, e_greedy=0):
         self.actions = list(range(env.n_actions)) 
         self.env = env # This would be the maze environment
         self.lr = learning_rate # Not used
