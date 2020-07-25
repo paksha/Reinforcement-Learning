@@ -51,3 +51,6 @@ class Sarsa:
                     name=state,
                 )
             )
+
+    def eps_decay(self):
+        self.epsilon *= 0.998

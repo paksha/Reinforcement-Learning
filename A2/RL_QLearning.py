@@ -52,3 +52,6 @@ class QLearning:
                     name=state,
                 )
             )
+
+    def eps_decay(self):
+        self.epsilon *= 0.99

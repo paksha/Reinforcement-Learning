@@ -4,6 +4,8 @@ from RL_PolicyIteration import AsyncPolicyIteration as asyncPI
 from RL_ValueIteration import AsyncValueIteration as asyncVI
 from RL_Sarsa import Sarsa
 from RL_QLearning import QLearning
+from RL_ExpectedSarsa import ExpectedSarsa as expSarsa
+from RL_Double_QLearning import DoubleQLearning as dql
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -69,9 +71,10 @@ def update(env, RL, data, episodes=50):
 
             # break while loop when end of this episode
             if done:
+                RL.eps_decay() # THIS WILL BREAK IF THE RL ALGORITHM DOESN'T HAVE EPSILON DECAY
                 break
-            else:
-                t=t+1
+            
+            t += 1
 
         debug(1,"({}) Episode {}: Length={}  Total return = {} ".format(RL.display_name,episode, t,  global_reward[episode],global_reward[episode]),printNow=(episode%printEveryNth==0))
         if(episode>=100):
@@ -85,12 +88,12 @@ def runExperiments(wall_shape, pits, episodes):
     # If Async Policy Iteration begins with a very bad policy, it MIGHT get stuck (rarely) in Task 3 or hard tasks in the early episodes.
     # If this is the case, please just try to run it again, and that will likely resolve the problem.
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = asyncPI(env1)
+    RL1 = dql(actions=list(range(env1.n_actions)))
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
     experiments = [(env1,RL1, data1)]
-    
+    '''
     env2 = Maze(agentXY,goalXY,wall_shape,pits)
     RL2 = asyncVI(env2)
     data2={}
@@ -114,6 +117,7 @@ def runExperiments(wall_shape, pits, episodes):
     env4.after(10, update(env4, RL4, data4, episodes))
     env4.mainloop()
     experiments.append((env4,RL4, data4))
+    '''
     
     return experiments
 
