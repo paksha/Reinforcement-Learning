@@ -6,6 +6,7 @@ from RL_Sarsa import Sarsa
 from RL_QLearning import QLearning
 from RL_ExpectedSarsa import ExpectedSarsa as expSarsa
 from RL_Double_QLearning import DoubleQLearning as dql
+from RL_Sarsa_ET import SarsaET
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -88,7 +89,7 @@ def runExperiments(wall_shape, pits, episodes):
     # If Async Policy Iteration begins with a very bad policy, it MIGHT get stuck (rarely) in Task 3 or hard tasks in the early episodes.
     # If this is the case, please just try to run it again, and that will likely resolve the problem.
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = dql(actions=list(range(env1.n_actions)))
+    RL1 = SarsaET(actions=list(range(env1.n_actions)))
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
