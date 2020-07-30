@@ -7,6 +7,8 @@ from RL_QLearning import QLearning
 from RL_ExpectedSarsa import ExpectedSarsa as expSarsa
 from RL_Double_QLearning import DoubleQLearning as dql
 from RL_Sarsa_ET import SarsaET
+from RL_Reinforce import Reinforce
+from pg import PolicyGradientAgent as pga
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -54,7 +56,7 @@ def update(env, RL, data, episodes=50):
         debug(2,'state(ep:{},t:{})={}'.format(episode, t, state))
 
         # RL choose action based on state
-        action = RL.choose_action(str(state))
+        action = RL.choose_action(state) # removed str
         while True:
             # fresh env
             if(showRender or (episode % renderEveryNth)==0):
@@ -62,17 +64,18 @@ def update(env, RL, data, episodes=50):
 
             # RL take action and get next state and reward
             state_, reward, done = env.step(action)
+            RL.store_transition(state, action, reward)
             global_reward[episode] += reward
             debug(2,'state(ep:{},t:{})={}'.format(episode, t, state))
             debug(2,'reward_{}=  total return_t ={} Mean50={}'.format(reward, global_reward[episode],np.mean(global_reward[-50:])))
 
             # RL learn from this transition
             # and determine next state and action
-            state, action =  RL.learn(str(state), action, reward, str(state_))
+            state, action =  RL.learn(state, action, reward, state_) # removed str
 
             # break while loop when end of this episode
-            if done:
-                RL.eps_decay() # THIS WILL BREAK IF THE RL ALGORITHM DOESN'T HAVE EPSILON DECAY
+            if done or t > 99:
+                # RL.eps_decay() # THIS WILL BREAK IF THE RL ALGORITHM DOESN'T HAVE EPSILON DECAY
                 break
             
             t += 1
@@ -89,7 +92,7 @@ def runExperiments(wall_shape, pits, episodes):
     # If Async Policy Iteration begins with a very bad policy, it MIGHT get stuck (rarely) in Task 3 or hard tasks in the early episodes.
     # If this is the case, please just try to run it again, and that will likely resolve the problem.
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = SarsaET(actions=list(range(env1.n_actions)))
+    RL1 = pga()
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
@@ -129,9 +132,9 @@ if __name__ == "__main__":
 
     #Example Short Fast for Debugging
     showRender=False
-    episodes=2000
+    episodes=5000
     renderEveryNth=5000
-    printEveryNth=100
+    printEveryNth=20
     do_plot_rewards=True
 
     if(len(sys.argv)>1):

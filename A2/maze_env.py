@@ -87,7 +87,7 @@ class Maze(tk.Tk, object):
 
     def reset(self, value = 1, resetAgent=True):
         self.update()
-        time.sleep(0.2)
+        time.sleep(0.1)
         if(value == 0):
             return self.canvas.coords(self.agent)
         else:
