@@ -48,7 +48,7 @@ class Policy(nn.Module):
 
 
 policy = Policy()
-optimizer = optim.Adam(policy.parameters(), lr=1e-6)
+optimizer = optim.Adam(policy.parameters(), lr=5e-3)
 eps = np.finfo(np.float32).eps.item()
 
 def decode(state):
@@ -103,9 +103,6 @@ def main():
             if done:
                 eps.append(i_episode)
                 points.append(ep_reward)
-                if i_episode % 500 == 0:
-                    plt.plot(eps, points)
-                    plt.show()
                 break
 
         running_reward = 0.05 * ep_reward + (1 - 0.05) * running_reward
@@ -117,7 +114,8 @@ def main():
         #     print("Solved! Running reward is now {} and "
         #           "the last episode runs to {} time steps!".format(running_reward, t))
         #     break
-
+    plt.plot(eps, points)
+    plt.show()
 
 if __name__ == '__main__':
     main()
