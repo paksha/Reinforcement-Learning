@@ -48,7 +48,7 @@ class Policy(nn.Module):
 
 
 policy = Policy()
-optimizer = optim.Adam(policy.parameters(), lr=5e-3)
+optimizer = optim.Adam(policy.parameters(), lr=5e-4)
 eps = np.finfo(np.float32).eps.item()
 
 def decode(state):
