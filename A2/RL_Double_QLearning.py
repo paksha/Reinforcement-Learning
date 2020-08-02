@@ -24,12 +24,13 @@ class DoubleQLearning:
         return action
 
     def learn(self, s, a, r, s_):
-        self.check_state_exist(s_)
-        a_ = self.choose_action(str(s_))
+        self.check_state_exist(str(s))
+        self.check_state_exist(str(s_))
+        a_ = self.choose_action(s_)
         if np.random.uniform() < 0.5:
-            self.update_q(self.q, self.q_, s, a, r, s_)
+            self.update_q(self.q, self.q_, str(s), a, r, str(s_))
         else:
-            self.update_q(self.q_, self.q, s, a, r, s_)
+            self.update_q(self.q_, self.q, str(s), a, r, str(s_))
         return s_, a_
     
     def update_q(self, q, q_, s, a, r, s_):

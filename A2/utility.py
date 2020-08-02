@@ -32,3 +32,11 @@ def move(s, action):
     s[2] += action[0] # update x1
     s[3] += action[1] # update y1
     return s
+
+def decode(state):
+    new_state = state[:2]
+    new_state = [int(new_state[0]-5)//40, int(new_state[1]-5)//40]
+    cell = 10*new_state[1]+new_state[0]
+    e = np.zeros(100)
+    e[cell] = 1
+    return e

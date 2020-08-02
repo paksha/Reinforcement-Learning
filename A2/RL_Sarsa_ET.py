@@ -52,4 +52,4 @@ class SarsaET:
             )
 
     def eps_decay(self):
-        self.epsilon *= 0.998
+        self.epsilon *= 0.99
