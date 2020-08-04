@@ -101,14 +101,14 @@ def update(env, RL, data, episodes=50):
 def runExperiments(wall_shape, pits, episodes):
     
     env1 = Maze(agentXY,goalXY,wall_shape, pits)
-    RL1 = dql(actions=list(range(env1.n_actions)))
+    RL1 = pg()
     data1={}
     env1.after(10, update(env1, RL1, data1, episodes))
     env1.mainloop()
     experiments = [(env1,RL1, data1)]
     
     env2 = Maze(agentXY,goalXY,wall_shape,pits)
-    RL2 = pg()
+    RL2 = dql(actions=list(range(env1.n_actions)))
     data2={}
     env2.after(10, update(env2, RL2, data2, episodes))
     env2.mainloop()
@@ -138,9 +138,8 @@ def runExperiments(wall_shape, pits, episodes):
 if __name__ == "__main__":
     sim_speed = 0
 
-    #Example Short Fast for Debugging
     showRender=False
-    episodes=2000
+    episodes=100
     renderEveryNth=5000
     printEveryNth=200
     do_plot_rewards=True
