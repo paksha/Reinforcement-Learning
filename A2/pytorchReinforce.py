@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from maze_env import Maze
 from utility import decode
 
+# This is a modified version of https://github.com/pytorch/examples/blob/master/reinforcement_learning/reinforce.py
+
 class Policy(nn.Module):
     def __init__(self):
         super(Policy, self).__init__()
