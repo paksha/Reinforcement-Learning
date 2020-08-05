@@ -81,6 +81,7 @@ def update(env, RL, data, episodes=50):
             # break while loop when end of this episode
             if done or t > MAX_STEPS: 
                 # RL.eps_decay() # THIS WILL BREAK IF THE RL ALGORITHM DOESN'T HAVE EPSILON DECAY
+                # Forgot to call the eps decay function in my experiments
                 if RL.display_name == "Policy Gradient":
                     RL.eps.append(episode)
                     RL.learn()
