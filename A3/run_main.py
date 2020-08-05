@@ -140,7 +140,7 @@ if __name__ == "__main__":
     sim_speed = 0
 
     showRender=False
-    episodes=100
+    episodes=2000
     renderEveryNth=5000
     printEveryNth=200
     do_plot_rewards=True
