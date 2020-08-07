@@ -21,7 +21,7 @@ class Policy(nn.Module):
         self.rewards = []
         self.eps = []
         self.display_name="Policy Gradient"
-        self.optimizer = optim.Adam(self.parameters(), lr=5e-5) # lr = 1e-3 for task 3, 1e-2 for task 2, 5e-4 task 1
+        self.optimizer = optim.Adam(self.parameters(), lr=5e-5) # lr = 1e-3 for task 3, 1e-2 for task 2, 5e-5 task 1
 
     def forward(self, x):
         x = self.affine1(x)
